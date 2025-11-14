@@ -1,72 +1,54 @@
-<!-- pom.xml - Maven project descriptor -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <!-- Basic Maven coordinates -->
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.automationstudent</groupId>         <!-- group id -->
-    <artifactId>AutomationStudentTestProject</artifactId> <!-- artifact id -->
-    <version>1.0-SNAPSHOT</version>                 <!-- project version -->
-    <name>AutomationStudentTestProject</name>
 
-    <!-- Properties: Java version -->
+    <groupId>com.automationstudent</groupId>
+    <artifactId>AutomationStudentTestNGProject</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
     <properties>
-        <maven.compiler.source>17</maven.compiler.source> <!-- compile source level -->
-        <maven.compiler.target>17</maven.compiler.target> <!-- compile target level -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire.version>3.0.0-M8</surefire.version> <!-- surefire plugin for running TestNG -->
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <selenium.version>4.15.0</selenium.version>
+        <testng.version>7.8.0</testng.version>
+        <webdrivermanager.version>5.4.1</webdrivermanager.version>
     </properties>
 
     <dependencies>
-        <!-- Selenium Java - contains WebDriver interfaces and implementations -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.15.0</version>
+            <version>${selenium.version}</version>
         </dependency>
 
-        <!-- TestNG - testing framework -->
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.8.0</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- WebDriverManager - automates driver binaries like chromedriver -->
         <dependency>
             <groupId>io.github.bonigarcia</groupId>
             <artifactId>webdrivermanager</artifactId>
-            <version>5.4.1</version>
+            <version>${webdrivermanager.version}</version>
         </dependency>
 
-    </dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
-            <!-- Maven Compiler Plugin: compile with Java 17 -->
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-            </plugin>
-
-            <!-- Maven Surefire Plugin: runs TestNG tests -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire.version}</version>
-                <configuration>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile> <!-- ensures testng.xml is used -->
-                    </suiteXmlFiles>
-                    <!-- pass system properties if needed -->
-                </configuration>
+                <version>3.1.2</version>
             </plugin>
         </plugins>
     </build>
