@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- testng.xml - configures our TestNG suite and enables parallel="classes" -->
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="AutomationStudentSuite" parallel="classes" thread-count="2">
+    <!-- parallel="classes" runs each Test class in parallel -->
+    <test name="FormAndAlertTests">
+        <classes>
+            <!-- fully qualified class names -->
+            <class name="com.automationstudent.tests.FormTests"/>
+            <class name="com.automationstudent.tests.AlertTests"/>
+        </classes>
+    </test>
+</suite>
