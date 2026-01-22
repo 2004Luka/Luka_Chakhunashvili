@@ -18,17 +18,10 @@ import org.testng.annotations.BeforeClass;
 
 import java.time.Duration;
 
-/**
- * BaseTest belongs to the "base" layer:
- * - Centralizes WebDriver setup/teardown
- * - Provides shared utilities (waits, scrolling, attachments)
- * This keeps tests clean and focused on validation.
- */
 public class BaseTest {
 
     protected WebDriver driver;
 
-    // Duration-based waits (modern Java style).
     private static final Duration WAIT_TIMEOUT = Duration.ofSeconds(10);
 
     @BeforeClass(alwaysRun = true)
@@ -41,10 +34,6 @@ public class BaseTest {
         driver = new ChromeDriver(options);
     }
 
-    /**
-     * Takes a screenshot on failure and attaches it to Allure.
-     * This makes failures easier to debug from the report.
-     */
     @AfterMethod(alwaysRun = true)
     public void attachScreenshotOnFailure(ITestResult result) {
         if (result.getStatus() == ITestResult.FAILURE && driver != null) {
@@ -69,11 +58,6 @@ public class BaseTest {
         waitFor().until(ExpectedConditions.visibilityOf(element));
     }
 
-    /**
-     * Allure @Attachment:
-     * - Any returned byte[] becomes an attachment in the report.
-     * - Here we attach a PNG screenshot when a test fails.
-     */
     @Attachment(value = "Screenshot on failure", type = "image/png")
     protected byte[] attachScreenshot(WebDriver driver) {
         return ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);

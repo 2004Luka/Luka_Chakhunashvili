@@ -1,92 +1,46 @@
 package com.automationstudent.pages;
 
 import io.qameta.allure.Step;
+import org.openqa.selenium.By;
 import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-/**
- * Page Object for DemoQA Practice Form.
- * Uses Page Factory (@FindBy) and exposes actions as methods annotated with @Step,
- * so every UI interaction is visible in Allure.
- */
 public class PracticeFormPage {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
 
+    private final By firstNameInput = By.id("firstName");
+    private final By lastNameInput = By.id("lastName");
+    private final By emailInput = By.id("userEmail");
+    private final By genderMaleLabel = By.xpath("//label[text()='Male']");
+    private final By mobileInput = By.id("userNumber");
+    private final By hobbySportsLabel = By.xpath("//label[text()='Sports']");
+    private final By addressInput = By.id("currentAddress");
+
+    private final By stateContainer = By.id("state");
+    private final By stateInput = By.cssSelector("#state input");
+    private final By cityContainer = By.id("city");
+    private final By cityInput = By.cssSelector("#city input");
+
+    private final By submitButton = By.id("submit");
+
+    private final By resultModal = By.cssSelector(".modal-content");
+    private final By modalStudentName = By.xpath("//td[text()='Student Name']/following-sibling::td");
+    private final By modalGender = By.xpath("//td[text()='Gender']/following-sibling::td");
+    private final By modalMobile = By.xpath("//td[text()='Mobile']/following-sibling::td");
+    private final By modalAddress = By.xpath("//td[text()='Address']/following-sibling::td");
+    private final By modalStateAndCity = By.xpath("//td[text()='State and City']/following-sibling::td");
+
     public PracticeFormPage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
         this.wait = wait;
-        PageFactory.initElements(driver, this);
     }
-
-    // --- fields ---
-    @FindBy(id = "firstName")
-    private WebElement firstNameInput;
-
-    @FindBy(id = "lastName")
-    private WebElement lastNameInput;
-
-    @FindBy(id = "userEmail")
-    private WebElement emailInput;
-
-    @FindBy(xpath = "//label[text()='Male']")
-    private WebElement genderMaleLabel;
-
-    @FindBy(id = "userNumber")
-    private WebElement mobileInput;
-
-    @FindBy(xpath = "//label[text()='Sports']")
-    private WebElement hobbySportsLabel;
-
-    // Clicking the input directly is often more reliable than clicking the label when overlays exist.
-    @FindBy(id = "hobbies-checkbox-1")
-    private WebElement hobbySportsCheckboxInput;
-
-    @FindBy(id = "currentAddress")
-    private WebElement addressInput;
-
-    // React dropdowns
-    @FindBy(id = "state")
-    private WebElement stateContainer;
-
-    @FindBy(css = "#state input")
-    private WebElement stateInput;
-
-    @FindBy(id = "city")
-    private WebElement cityContainer;
-
-    @FindBy(css = "#city input")
-    private WebElement cityInput;
-
-    @FindBy(id = "submit")
-    private WebElement submitButton;
-
-    // --- modal ---
-    @FindBy(css = ".modal-content")
-    private WebElement resultModal;
-
-    @FindBy(xpath = "//td[text()='Student Name']/following-sibling::td")
-    private WebElement modalStudentName;
-
-    @FindBy(xpath = "//td[text()='Gender']/following-sibling::td")
-    private WebElement modalGender;
-
-    @FindBy(xpath = "//td[text()='Mobile']/following-sibling::td")
-    private WebElement modalMobile;
-
-    @FindBy(xpath = "//td[text()='Address']/following-sibling::td")
-    private WebElement modalAddress;
-
-    @FindBy(xpath = "//td[text()='State and City']/following-sibling::td")
-    private WebElement modalStateAndCity;
 
     @Step("Open Practice Form page: {url}")
     public PracticeFormPage open(String url) {
@@ -96,19 +50,19 @@ public class PracticeFormPage {
 
     @Step("Type First Name: {firstName}")
     public PracticeFormPage typeFirstName(String firstName) {
-        wait.until(ExpectedConditions.visibilityOf(firstNameInput)).sendKeys(firstName);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameInput)).sendKeys(firstName);
         return this;
     }
 
     @Step("Type Last Name: {lastName}")
     public PracticeFormPage typeLastName(String lastName) {
-        lastNameInput.sendKeys(lastName);
+        driver.findElement(lastNameInput).sendKeys(lastName);
         return this;
     }
 
     @Step("Type Email: {email}")
     public PracticeFormPage typeEmail(String email) {
-        emailInput.sendKeys(email);
+        driver.findElement(emailInput).sendKeys(email);
         return this;
     }
 
@@ -120,37 +74,35 @@ public class PracticeFormPage {
 
     @Step("Type Mobile: {mobile}")
     public PracticeFormPage typeMobile(String mobile) {
-        mobileInput.sendKeys(mobile);
+        driver.findElement(mobileInput).sendKeys(mobile);
         return this;
     }
 
     @Step("Select Hobby: Sports")
     public PracticeFormPage selectHobbySports() {
-        // Ads/iframes can block clicks on DemoQA. This makes the click resilient.
-        hideBlockingAdsIfPresent();
-        safeClick(hobbySportsLabel, hobbySportsCheckboxInput);
+        clickSafely(hobbySportsLabel);
         return this;
     }
 
     @Step("Type Address: {address}")
     public PracticeFormPage typeAddress(String address) {
-        addressInput.sendKeys(address);
+        driver.findElement(addressInput).sendKeys(address);
         return this;
     }
 
     @Step("Select State: {state}")
     public PracticeFormPage selectState(String state) {
-        wait.until(ExpectedConditions.elementToBeClickable(stateContainer)).click();
+        clickContainerSafely(stateContainer);
         wait.until(ExpectedConditions.elementToBeClickable(stateInput)).sendKeys(state);
-        stateInput.sendKeys(Keys.ENTER);
+        driver.findElement(stateInput).sendKeys(Keys.ENTER);
         return this;
     }
 
     @Step("Select City: {city}")
     public PracticeFormPage selectCity(String city) {
-        wait.until(ExpectedConditions.elementToBeClickable(cityContainer)).click();
+        clickContainerSafely(cityContainer);
         wait.until(ExpectedConditions.elementToBeClickable(cityInput)).sendKeys(city);
-        cityInput.sendKeys(Keys.ENTER);
+        driver.findElement(cityInput).sendKeys(Keys.ENTER);
         return this;
     }
 
@@ -162,50 +114,58 @@ public class PracticeFormPage {
 
     @Step("Wait for submission modal")
     public PracticeFormPage waitForResultModal() {
-        wait.until(ExpectedConditions.visibilityOf(resultModal));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(resultModal));
         return this;
     }
 
     @Step("Read modal: Student Name")
     public String getStudentNameFromModal() {
-        return wait.until(ExpectedConditions.visibilityOf(modalStudentName)).getText().trim();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(modalStudentName)).getText().trim();
     }
 
     @Step("Read modal: Gender")
     public String getGenderFromModal() {
-        return modalGender.getText().trim();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(modalGender)).getText().trim();
     }
 
     @Step("Read modal: Mobile")
     public String getMobileFromModal() {
-        return modalMobile.getText().trim();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(modalMobile)).getText().trim();
     }
 
     @Step("Read modal: Address")
     public String getAddressFromModal() {
-        return modalAddress.getText().trim();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(modalAddress)).getText().trim();
     }
 
     @Step("Read modal: State and City")
     public String getStateAndCityFromModal() {
-        return modalStateAndCity.getText().trim();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(modalStateAndCity)).getText().trim();
     }
 
-    /**
-     * Tries to click normally; if an overlay intercepts the click, falls back to JavaScript click.
-     * We keep this in the Page Object so tests stay clean (no driver logic in tests).
-     */
-    private void safeClick(WebElement preferredElement, WebElement fallbackElement) {
-        WebElement toClick = (preferredElement != null) ? preferredElement : fallbackElement;
+    private void clickContainerSafely(By container) {
+        hideBlockingAdsIfPresent();
 
-        wait.until(ExpectedConditions.visibilityOf(toClick));
-        scrollIntoView(toClick);
+        WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(container));
+        scrollIntoView(el);
 
         try {
-            wait.until(ExpectedConditions.elementToBeClickable(toClick)).click();
+            wait.until(ExpectedConditions.elementToBeClickable(container)).click();
         } catch (ElementClickInterceptedException e) {
-            // If something overlays the element, JS click ignores the physical click constraints.
-            jsClick((fallbackElement != null) ? fallbackElement : toClick);
+            jsClick(el);
+        }
+    }
+
+    private void clickSafely(By locator) {
+        hideBlockingAdsIfPresent();
+
+        WebElement el = wait.until(ExpectedConditions.presenceOfElementLocated(locator));
+        scrollIntoView(el);
+
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(locator)).click();
+        } catch (ElementClickInterceptedException e) {
+            jsClick(el);
         }
     }
 
@@ -220,10 +180,6 @@ public class PracticeFormPage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
-    /**
-     * DemoQA sometimes shows a sticky/anchor ad iframe that intercepts clicks.
-     * Hiding it is a pragmatic approach for demo sites (not recommended for real apps unless agreed).
-     */
     private void hideBlockingAdsIfPresent() {
         ((JavascriptExecutor) driver).executeScript("""
                 const iframes = Array.from(document.querySelectorAll('iframe[id^="google_ads_iframe"]'));

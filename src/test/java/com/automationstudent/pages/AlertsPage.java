@@ -2,38 +2,24 @@ package com.automationstudent.pages;
 
 import io.qameta.allure.Step;
 import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-/**
- * "pages" layer:
- * - Stores locators (@FindBy)
- * - Exposes user actions as methods (click/type/read)
- * Tests should not use locators or WebDriver calls directly.
- */
 public class AlertsPage {
 
     private final WebDriver driver;
     private final WebDriverWait wait;
 
+    private final By alertWithTextboxTab = By.xpath("//a[contains(text(),'Alert with Textbox')]");
+    private final By promptButton = By.xpath("//button[contains(., 'prompt')]");
+    private final By promptResultMessage = By.id("demo1");
+
     public AlertsPage(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
         this.wait = wait;
-        PageFactory.initElements(driver, this);
     }
-
-    @FindBy(xpath = "//a[contains(text(),'Alert with Textbox')]")
-    private WebElement alertWithTextboxTab;
-
-    @FindBy(xpath = "//button[contains(., 'prompt')]")
-    private WebElement promptButton;
-
-    @FindBy(id = "demo1")
-    private WebElement promptResultMessage;
 
     @Step("Open Alerts page: {url}")
     public AlertsPage open(String url) {
@@ -53,7 +39,7 @@ public class AlertsPage {
         return this;
     }
 
-    @Step("Type into prompt alert: {name} and accept")
+    @Step("Type into prompt alert and accept")
     public AlertsPage fillPromptAndAccept(String name) {
         Alert alert = wait.until(ExpectedConditions.alertIsPresent());
         alert.sendKeys(name);
@@ -63,6 +49,6 @@ public class AlertsPage {
 
     @Step("Read prompt result text")
     public String getPromptResultMessage() {
-        return wait.until(ExpectedConditions.visibilityOf(promptResultMessage)).getText().trim();
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(promptResultMessage)).getText().trim();
     }
 }
