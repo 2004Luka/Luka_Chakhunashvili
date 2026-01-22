@@ -1,39 +1,44 @@
 package com.automationstudent.tests;
 
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import com.automationstudent.base.BaseTest;
+import com.automationstudent.pages.AlertsPage;
+import io.qameta.allure.*;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+/**
+ * "tests" layer:
+ * - Contains assertions and test flow only
+ * - No locators, no direct driver interaction
+ */
+@Epic("UI Automation")
+@Feature("Browser Alerts")
 public class AlertTests extends BaseTest {
 
-    @Test
+    @Test(description = "Validate prompt alert input is reflected in the result label.")
+    @Story("User can type a name into a prompt alert and see confirmation text")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("""
+            Allure annotations:
+            - @Epic: large business area grouping
+            - @Feature: functional module grouping
+            - @Story: specific scenario/user story
+            - @Severity: business impact of failure
+            - @Description: readable documentation in the report
+            """)
     public void testPromptAlert() {
-        driver.get("https://demo.automationtesting.in/Alerts.html");
+        AlertsPage alertsPage = new AlertsPage(driver, waitFor());
 
-        WebElement promptTab = getWait().until(
-                ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(),'Alert with Textbox')]"))
-        );
-        promptTab.click();
-
-        WebElement promptButton = getWait().until(
-                ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(., 'prompt')]"))
-        );
-        promptButton.click();
-
-        Alert alert = getWait().until(ExpectedConditions.alertIsPresent());
         String name = "Luka Chakhunashvili";
-        alert.sendKeys(name);
-        alert.accept();
 
-        WebElement result = getWait().until(
-                ExpectedConditions.visibilityOfElementLocated(By.id("demo1"))
-        );
+        alertsPage.open("https://demo.automationtesting.in/Alerts.html")
+                .openAlertWithTextboxTab()
+                .clickPromptButton()
+                .fillPromptAndAccept(name);
 
+        String actual = alertsPage.getPromptResultMessage();
         String expected = "Hello " + name + " How are you today";
-        String actual = result.getText().trim();
+
         Assert.assertEquals(actual, expected, "Alert response message must match exactly.");
     }
 }
